@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.autofactory;
+package tests;
 
-import static java.lang.annotation.ElementType.PARAMETER;
+import com.google.auto.factory.AutoFactory;
+import tests.SimpleClassImplementingSimpleInterface.SimpleInterface;
 
-import java.lang.annotation.Target;
-
-/**
- * An annotation to be applied to parameters that should be provided by an
- * {@linkplain javax.inject.Inject injected} {@link javax.inject.Provider} in a generated factory.
- *
- * @author Gregory Kick
- */
-@Target(PARAMETER)
-public @interface Provided { }
+@AutoFactory(implementing = SimpleInterface.class)
+final class SimpleClassImplementingSimpleInterface {
+  interface SimpleInterface {
+    SimpleClassImplementingSimpleInterface newInstance();
+  }
+}

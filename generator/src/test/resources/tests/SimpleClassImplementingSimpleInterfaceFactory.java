@@ -17,12 +17,17 @@ package tests;
 
 import javax.annotation.Generated;
 import javax.inject.Inject;
+import tests.SimpleClassImplementingSimpleInterface.SimpleInterface;
 
 @Generated(value = "com.google.auto.factory.AutoFactoryProcessor")
-final class SimpleClassPassedDepsFactory {
-  @Inject SimpleClassPassedDepsFactory() {}
+final class SimpleClassImplementingSimpleInterfaceFactory implements SimpleInterface {
+  @Inject SimpleClassImplementingSimpleInterfaceFactory() {}
   
-  SimpleClassPassedDeps create(String depA, String depB) {
-    return new SimpleClassPassedDeps(depA, depB);
+  SimpleClassImplementingSimpleInterface create() {
+    return new SimpleClassImplementingSimpleInterface();
+  }
+
+  @Override public SimpleClassImplementingSimpleInterface newInstance() {
+    return create();
   }
 }

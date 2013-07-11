@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.autofactory;
+package com.google.auto.factory;
 
 import static com.google.auto.factory.gentest.JavaSourceSubjectFactory.JAVA_SOURCE;
 import static com.google.common.base.Charsets.UTF_8;
@@ -34,7 +34,6 @@ import javax.tools.ToolProvider;
 
 import org.junit.Before;
 import org.junit.ComparisonFailure;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -68,7 +67,7 @@ public class AutoFactoryProcessorTest {
   private CompilationTask createCompilationTask(Set<File> sources) {
     return compiler.getTask(null, fileManager,
         null /* default diagnostic listener */,
-        ImmutableList.of("-processor", "com.google.autofactory.AutoFactoryProcessor"),
+        ImmutableList.of("-processor", "com.google.auto.factory.AutoFactoryProcessor"),
         null,
         fileManager.getJavaFileObjectsFromFiles(sources));
   }
@@ -148,11 +147,26 @@ public class AutoFactoryProcessorTest {
     assertOutput("tests/ConstructorAnnotatedFactory.java");
   }
 
-  @Ignore  // this test doesn't pass yet
-  @Test public void simpleClassImplementingFactory() throws IOException {
-    File sourceFile = copyFromResource("tests/SimpleClassImplementing.java", inputSources);
+  @Test public void simpleClassImplementingMarker() throws IOException {
+    File sourceFile = copyFromResource("tests/SimpleClassImplementingMarker.java", inputSources);
     CompilationTask task = createCompilationTask(ImmutableSet.of(sourceFile));
     assertTrue("compilation failed", task.call());
-    assertOutput("tests/SimpleClassImplementingFactory.java");
+    assertOutput("tests/SimpleClassImplementingMarkerFactory.java");
+  }
+
+  @Test public void simpleClassImplementingSimpleInterface() throws IOException {
+    File sourceFile =
+        copyFromResource("tests/SimpleClassImplementingSimpleInterface.java", inputSources);
+    CompilationTask task = createCompilationTask(ImmutableSet.of(sourceFile));
+    assertTrue("compilation failed", task.call());
+    assertOutput("tests/SimpleClassImplementingSimpleInterfaceFactory.java");
+  }
+
+  @Test public void mixedDepsImplementingInterfaces() throws IOException {
+    File sourceFile =
+        copyFromResource("tests/MixedDepsImplementingInterfaces.java", inputSources);
+    CompilationTask task = createCompilationTask(ImmutableSet.of(sourceFile));
+    assertTrue("compilation failed", task.call());
+    assertOutput("tests/MixedDepsImplementingInterfacesFactory.java");
   }
 }

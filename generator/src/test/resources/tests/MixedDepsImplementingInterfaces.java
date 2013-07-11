@@ -15,14 +15,28 @@
  */
 package tests;
 
-import javax.annotation.Generated;
-import javax.inject.Inject;
+import com.google.auto.factory.AutoFactory;
+import com.google.auto.factory.Provided;
 
-@Generated(value = "com.google.auto.factory.AutoFactoryProcessor")
-final class SimpleClassPassedDepsFactory {
-  @Inject SimpleClassPassedDepsFactory() {}
+/**
+ * @author Gregory Kick
+ */
+final class MixedDepsImplementingInterfaces {
+  @AutoFactory(implementing = {FromInt.class, MarkerA.class})
+  MixedDepsImplementingInterfaces(@Provided String s, int i) {}
   
-  SimpleClassPassedDeps create(String depA, String depB) {
-    return new SimpleClassPassedDeps(depA, depB);
+  @AutoFactory(implementing = {FromObject.class, MarkerB.class})
+  MixedDepsImplementingInterfaces(Object o) {}
+
+  interface FromInt {
+    MixedDepsImplementingInterfaces fromInt(int i);
   }
+  
+  interface FromObject {
+    MixedDepsImplementingInterfaces fromObject(Object o);
+  }
+  
+  interface MarkerA {}
+
+  interface MarkerB {}
 }

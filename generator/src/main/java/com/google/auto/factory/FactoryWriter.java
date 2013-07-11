@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.autofactory;
+package com.google.auto.factory;
 
 import static java.lang.reflect.Modifier.PUBLIC;
 
@@ -120,6 +120,23 @@ final class FactoryWriter {
               });
       writer.emitStatement("return new %s(%s)", writer.compressType(methodDescriptor.returnType()),
           argumentJoiner.join(creationParameterNames));
+      writer.endMethod();
+    }
+
+    for (ImplemetationMethodDescriptor methodDescriptor
+        : descriptor.implementationMethodDescriptors()) {
+      writer.emitAnnotation(Override.class);
+      writer.beginMethod(methodDescriptor.returnType(), methodDescriptor.name(),
+          methodDescriptor.publicMethod() ? PUBLIC : 0,
+          parameterTokens(methodDescriptor.passedParameters()));
+      FluentIterable<String> creationParameterNames =
+          FluentIterable.from(methodDescriptor.passedParameters())
+              .transform(new Function<Parameter, String>() {
+                @Override public String apply(Parameter parameter) {
+                  return parameter.name();
+                }
+              });
+      writer.emitStatement("return create(%s)", argumentJoiner.join(creationParameterNames));
       writer.endMethod();
     }
 

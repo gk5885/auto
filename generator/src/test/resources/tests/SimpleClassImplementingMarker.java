@@ -13,21 +13,10 @@
  */
 package tests;
 
+import java.util.RandomAccess;
+
 import com.google.auto.factory.AutoFactory;
-import com.google.auto.factory.Provided;
 
-/**
- * @author Gregory Kick
- */
-@AutoFactory
-@SuppressWarnings("unused")
-final class SimpleClassProvidedDeps {
-  private final String providedDepA;
-  private final String providedDepB;
-
-  SimpleClassProvidedDeps(@Provided @AQualifier String providedDepA,
-      @Provided @BQualifier String providedDepB) {
-    this.providedDepA = providedDepA;
-    this.providedDepB = providedDepB;
-  }
+@AutoFactory(implementing = RandomAccess.class)
+class SimpleClassImplementingMarker {
 }
