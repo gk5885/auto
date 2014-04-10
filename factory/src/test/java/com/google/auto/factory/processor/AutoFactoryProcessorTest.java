@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.testing.compile.JavaFileObjects;
 
@@ -242,5 +243,43 @@ public class AutoFactoryProcessorTest {
         .compilesWithoutError()
         .and().generatesSources(JavaFileObjects.forResource(
             "expected/FactoryImplementingGenericInterfaceExtension.java"));
+  }
+
+  @Test public void factoryInterfaceMethodNamedCreate() {
+    JavaFileObject factoryInterface = JavaFileObjects.forSourceString("test.Factory",
+        Joiner.on('\n').join(
+            "package test;",
+            "",
+            "interface Factory {",
+            "  SimpleType create(String s);",
+            "}"
+            ));
+    JavaFileObject autoType = JavaFileObjects.forSourceString("test.SimpleType",
+        Joiner.on('\n').join(
+            "package test;",
+            "",
+            "import com.google.auto.factory.AutoFactory;",
+            "",
+            "class SimpleType {",
+            "  @AutoFactory(implementing = Factory.class)",
+            "  SimpleType(String s) {}",
+            "}"
+            ));
+    JavaFileObject autoTypeFactory = JavaFileObjects.forSourceString("test.SimpleTypeFactory",
+        Joiner.on('\n').join(
+            "package test;",
+            "",
+            "import com.google.auto.factory.AutoFactory;",
+            "",
+            "class SimpleTypeFactory {",
+            "  SimpleTypeFactory() {}",
+            "}"
+            ));
+    ASSERT.about(javaSources())
+        .that(ImmutableSet.of(factoryInterface, autoType))
+        .processedWith(new AutoFactoryProcessor())
+        .compilesWithoutError()
+        .and()
+        .generatesSources(autoTypeFactory);
   }
 }
